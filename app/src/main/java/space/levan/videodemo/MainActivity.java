@@ -6,24 +6,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by WangZhiYao on 16/9/14.
  */
-public class MainActivity extends AppCompatActivity {
-
-    @Bind(R.id.toolbar)
+public class MainActivity extends AppCompatActivity
+{
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.tv_fullscreen)
+    @BindView(R.id.tv_fullscreen)
     TextView mTvFullScreen;
     @OnClick(R.id.tv_fullscreen)
     public void onClick()
     {
-        Intent intent = new Intent(MainActivity.this, VideoPlayActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MainActivity.this, VideoPlayActivity.class));
     }
 
     @Override
@@ -33,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mTvFullScreen = (TextView) findViewById(R.id.tv_fullscreen);
-        mTvFullScreen.setText("DEMO");
+        mTvFullScreen.setText(R.string.main_btn_play_demo);
         mToolbar.setTitle(getResources().getString(R.string.app_name));
     }
 }

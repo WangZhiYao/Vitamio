@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VideoDemo</string>
+    <string name="main_btn_play_demo">PLAY DEMO</string>
 </resources>

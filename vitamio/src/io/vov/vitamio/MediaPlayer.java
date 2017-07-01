@@ -62,6 +62,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * href="http://developer.android.com/guide/topics/media/index.html">Audio and
  * Video</a> for additional help using MediaPlayer.
  */
+@SuppressLint("NewApi")
 public class MediaPlayer {
   public static final int CACHE_TYPE_NOT_AVAILABLE = 1;
   public static final int CACHE_TYPE_START = 2;
@@ -213,6 +214,14 @@ public class MediaPlayer {
    */
   private static  boolean load_omxnative_lib(String path, String name){
 	  boolean load=false;
+	  
+	  File file=new File(Vitamio.getBrowserLibraryPath() + "/" +  name );    
+	  if(file.exists())    
+	  {   
+		  load=loadOMX_native(Vitamio.getBrowserLibraryPath()+ "/" + name); 
+		  return load;
+	  } 	  
+	  
 	  if(path==""){
 		  load=loadOMX_native(name);
 	  }
@@ -223,6 +232,13 @@ public class MediaPlayer {
   }
   private static  boolean loadVVO_native_lib(String path, String name){
 	  boolean load=false;
+	  File file=new File(Vitamio.getBrowserLibraryPath() + "/"+ name );    
+	  if(file.exists())    
+	  {   
+		  load=loadVVO_native(Vitamio.getBrowserLibraryPath() + "/" + name); 
+		  return load;
+	  } 	  
+	  
 	  if(path==""){
 		  load=loadVVO_native(name);
 	  }
@@ -234,6 +250,12 @@ public class MediaPlayer {
   
   private static  boolean loadVAO_native_lib(String path, String name){
 	  boolean load=false;
+	  File file=new File(Vitamio.getBrowserLibraryPath() + "/"+ name );    
+	  if(file.exists())    
+	  {   
+		  load=loadVAO_native(Vitamio.getBrowserLibraryPath() + "/"+ name); 
+		  return load;
+	  } 	  
 	  if(path==""){
 		  load=loadVAO_native(name);
 	  }
@@ -245,6 +267,12 @@ public class MediaPlayer {
 
   private static  boolean loadFFmpeg_native_lib(String path, String name){
 	  boolean load=false;
+	  File file=new File(Vitamio.getBrowserLibraryPath() + "/"+ name );    
+	  if(file.exists())    
+	  {   
+		  load=loadFFmpeg_native(Vitamio.getBrowserLibraryPath() + "/"+ name); 
+		  return load;
+	  } 	  
 	  if(path==""){
 		  load=loadFFmpeg_native(name);
 	  }
@@ -254,6 +282,12 @@ public class MediaPlayer {
 	  return load;
   }
   private static  boolean load_lib(String path, String name){
+	  File file=new File(Vitamio.getBrowserLibraryPath() + "/"+ name );    
+	  if(file.exists())    
+	  {   
+		  System.load(Vitamio.getBrowserLibraryPath() + "/"+ name); 
+		  return true;
+	  } 	  
 	  if(path==""){
 		  System.load(name);
 	  }
@@ -266,7 +300,10 @@ public class MediaPlayer {
     mContext = ctx;
 
     String LIB_ROOT;
-    if(VERSION.SDK_INT > 20) {
+	if(VERSION.SDK_INT > 23) {
+    	LIB_ROOT = Vitamio.getLibraryPath();
+    }
+    else if(VERSION.SDK_INT > 20) {
         LIB_ROOT = "";
     }
     else{
@@ -307,34 +344,39 @@ public class MediaPlayer {
   }
 
   static {
-	String LIB_ROOT;
-    if(VERSION.SDK_INT > 20) {
-        LIB_ROOT = "";
-    }
-    else{
-    	LIB_ROOT = Vitamio.getLibraryPath();
-    }
+  	File libFile; 
+	String LIB_ROOT="";
+	
     try {
-    
-  
-    load_lib(  LIB_ROOT ,  "libstlport_shared.so");
-    load_lib(  LIB_ROOT ,  "libvplayer.so");
-    loadFFmpeg_native_lib( LIB_ROOT , "libffmpeg.so");    
-      boolean vvo_loaded = false;
-      if (Build.VERSION.SDK_INT > 8)
-        vvo_loaded = loadVVO_native_lib( LIB_ROOT ,  "libvvo.9.so");
-      else if (Build.VERSION.SDK_INT > 7)
-        vvo_loaded = loadVVO_native_lib(  LIB_ROOT , "libvvo.8.so");
-      else
-        vvo_loaded = loadVVO_native_lib(  LIB_ROOT , "libvvo.7.so");
-      if (!vvo_loaded) {
-        vvo_loaded = loadVAO_native_lib(  LIB_ROOT ,  "libvvo.j.so");
-        Log.d("FALLBACK TO VVO JNI " + vvo_loaded);
-      }
-      loadVAO_native_lib( LIB_ROOT ,  "libvao.0.so");
-    } catch (java.lang.UnsatisfiedLinkError e) {
-      Log.e("Error loading libs", e);
+        libFile = new File(Vitamio.getLibraryPath()+"libstlport_shared.so" );
+    	if(libFile.exists()){
+    		LIB_ROOT=Vitamio.getLibraryPath();
+    	}else{
+    		libFile = new File(Vitamio.getDataPath()+"libstlport_shared.so" );
+    		if(libFile.exists()){
+    			LIB_ROOT=Vitamio.getDataPath();
+    		}
+    	}
+    	
+    	  if(LIB_ROOT==null){
+    	    	System.loadLibrary("stlport_shared");
+    	    	System.loadLibrary("vplayer");	
+    	    	loadFFmpeg_native("libffmpeg.so");
+    	    	loadVVO_native("libvvo.9.so");
+    	    	loadVVO_native("libvvo.9.so");
+    	    	loadVAO_native("libvao.0.so");
+    	    }else{
+    	    	System.load(LIB_ROOT+ "libstlport_shared.so");
+    	    	System.load(LIB_ROOT+ "libvplayer.so");
+    	    	loadFFmpeg_native(LIB_ROOT+"libffmpeg.so");
+    	    	loadVVO_native(LIB_ROOT+ "libvvo.9.so");
+    	    	loadVAO_native( LIB_ROOT+ "libvao.0.so");
+    	    }  
+    	  
+    }catch(Exception e){
+    	Log.e("load library err ");
     }
+  
   }
  
   private static void postEventFromNative(Object mediaplayer_ref, int what, int arg1, int arg2, Object obj) {
@@ -1308,9 +1350,20 @@ public class MediaPlayer {
   @SuppressLint("NewApi")
   
 private int audioTrackInit(int sampleRateInHz, int channels) {
-   this.sampleRateInHz=sampleRateInHz;
-   this.channels=channels;
-    return 0;
+ //  this.sampleRateInHz=sampleRateInHz;
+ //  this.channels=channels;
+ //   return 0;
+	
+ audioTrackRelease();
+    int channelConfig = channels >= 2 ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO;
+    try {
+      mAudioTrackBufferSize = AudioTrack.getMinBufferSize(sampleRateInHz, channelConfig, AudioFormat.ENCODING_PCM_16BIT);
+      mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz, channelConfig, AudioFormat.ENCODING_PCM_16BIT, mAudioTrackBufferSize, AudioTrack.MODE_STREAM);
+    } catch (Exception e) {
+      mAudioTrackBufferSize = 0;
+      Log.e("audioTrackInit", e);
+    }
+    return mAudioTrackBufferSize;
   }
   public int audioTrackInit() {
 //	  Log.e("  ffff mediaplayer audiotrackinit start .  sampleRateInHz:=" + sampleRateInHz + " channels:=" + channels );

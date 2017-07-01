@@ -16,7 +16,9 @@
 
 package io.vov.vitamio;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build.VERSION;
 
 import io.vov.vitamio.utils.CPU;
 import io.vov.vitamio.utils.ContextUtils;
@@ -33,6 +35,8 @@ import io.vov.vitamio.utils.Log;
 public class Vitamio {
   private static String vitamioPackage;
   private static String vitamioLibraryPath;
+  private static String vitamioDataPath;
+  private static String browserlibraryPath;
 
   /**
    * Check if Vitamio is initialized at this device
@@ -40,9 +44,14 @@ public class Vitamio {
    * @param ctx Android Context
    * @return true if the Vitamio has been initialized.
    */
+  @SuppressLint("NewApi")
   public static boolean isInitialized(Context ctx) {
     vitamioPackage = ctx.getPackageName();
-    vitamioLibraryPath = ContextUtils.getDataDir(ctx) + "lib/";
+
+    vitamioLibraryPath = ctx.getApplicationInfo().nativeLibraryDir + "/";
+  	vitamioDataPath = ContextUtils.getDataDir(ctx) + "lib/";
+    browserlibraryPath = ctx.getApplicationContext().getDir("libs", Context.MODE_PRIVATE).getPath();
+    
     return true;
   }
 
@@ -54,5 +63,13 @@ public class Vitamio {
   public static final String getLibraryPath() {
     return vitamioLibraryPath;
   }
+  
+  public static final String getDataPath() {
+	    return vitamioDataPath;
+	  }
+  
+  public static final String getBrowserLibraryPath() {
+	    return browserlibraryPath;
+	  }
 
 }
