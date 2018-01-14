@@ -26,8 +26,9 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-[1]:screenshot/ScreenShot_2018-01-14-00-38-35.png
-[2]:screenshot/ScreenShot_2018-01-14-00-39-03.png
-[3]:screenshot/ScreenShot_2018-01-14-00-39-35.png
-[4]:screenshot/ScreenShot_2018-01-14-01-07-23.png
-[5]:screenshot/ScreenShot_2018-01-14-01-07-33.png
+    
+[1]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-00-38-35.png
+[2]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-00-39-03.png
+[3]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-00-39-35.png
+[4]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-01-07-23.png
+[5]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-01-07-33.png
