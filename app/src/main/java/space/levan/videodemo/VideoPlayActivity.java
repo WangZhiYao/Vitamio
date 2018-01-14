@@ -32,37 +32,74 @@ import io.vov.vitamio.utils.StringUtils;
 import io.vov.vitamio.widget.VideoView;
 
 /**
- * Created by WangZhiYao on 2016/9/14.
+ * VideoPlayActivity
+ *
+ * @author WangZhiYao
+ * @date 2016/9/14
  */
-public class VideoPlayActivity extends AppCompatActivity
-{
-    private static final int UPDATE_PLAY_TIME = 0x01;//更新播放时间
+public class VideoPlayActivity extends AppCompatActivity {
+
+    private static final String TAG = "VideoPlayActivity";
+
+    /**
+     * 更新播放时间
+     */
+    private static final int UPDATE_PLAY_TIME = 0x01;
     private static final int UPDATE_TIME = 800;
-    private static final int HIDE_CONTROL_BAR = 0x02;//隐藏控制条
-    private static final int HIDE_TIME = 5000;//隐藏控制条时间
-    private static final int SHOW_CENTER_CONTROL = 0x03;//显示中间控制
+
+    /**
+     * 隐藏控制条
+     */
+    private static final int HIDE_CONTROL_BAR = 0x02;
+
+    /**
+     * 隐藏控制条时间
+     */
+    private static final int HIDE_TIME = 3000;
+
+    /**
+     * 显示中间控制
+     */
+    private static final int SHOW_CENTER_CONTROL = 0x03;
     private static final int SHOW_CONTROL_TIME = 1000;
 
     private final static int ADD_FLAG = 1;
     private final static int SUB_FLAG = -1;
 
-    private int mScreenWidth = 0;//屏幕宽度
-    private boolean mIsFullScreen = false;//是否为全屏
-    private long mVideoTotalTime = 0;//视频总时间
-    private boolean mIntoSeek = false;//是否 快进/快退
-    private long mSeek = 0;//快进的进度
-    private boolean mIsFastFinish = false;
+    /**
+     * 滑动敏感度
+     */
+    private static final double SLIP_SENSITIVITY = 0.65;
 
-    private GestureDetector mGestureDetector;
-    private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener;
+    /**
+     * 最小滑动距离
+     */
+    private static final int MIN_SLIP_DISTANCE = 200;
 
-    private AudioManager mAudioManager;
-    private int mMaxVolume;//最大声音
-    private int mShowVolume;//声音
-    private int mShowLightness;//亮度
+    /**
+     * 最大滑动距离
+     */
+    private static final int MAX_SLIP_DISTANCE = 10000;
 
-    private String mPlayUrl = "http://hd.yinyuetai.com/uploads/videos/common/" +
-            "D777015139CEB3E600E048A98570437E.flv?sc=628a84be651d38bb";
+    /**
+     * 设备最大音量
+     */
+    private static final int MAX_VOLUME = 100;
+
+    /**
+     * 设备最小音量
+     */
+    private static final int MIN_VOLUME = 0;
+
+    /**
+     * 设备最大亮度
+     */
+    private static final int MAX_LIGHTNESS = 255;
+
+    /**
+     * 设备最小亮度
+     */
+    private static final int MIN_LIGHTNESS = 0;
 
     @BindView(R.id.videoview)
     VideoView mVideoView;
@@ -91,75 +128,70 @@ public class VideoPlayActivity extends AppCompatActivity
     @BindView(R.id.video_layout)
     FrameLayout mVideoLayout;
 
-    @OnClick({R.id.iv_back, R.id.iv_play, R.id.iv_is_fullscreen})
-    public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.iv_back:
-                if (mIsFullScreen)
-                {
-                    if (mVideoView.isPlaying())
-                    {
-                        mHandler.removeMessages(HIDE_CONTROL_BAR);
-                        mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
-                    }
-                    setupUnFullScreen();
-                }
-                else
-                {
-                    finish();
-                }
-                break;
-            case R.id.iv_play:
-                if (mVideoView.isPlaying())
-                {
-                    mVideoView.pause();
-                    mIvPlay.setImageResource(R.drawable.video_play);
-                    mHandler.removeMessages(UPDATE_PLAY_TIME);
-                    mHandler.removeMessages(HIDE_CONTROL_BAR);
-                    showControlBar();
-                }
-                else
-                {
-                    mVideoView.start();
-                    mIvPlay.setImageResource(R.drawable.video_pause);
-                    mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
-                    mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
-                }
-                break;
-            case R.id.iv_is_fullscreen:
-                if (mIsFullScreen)
-                {
-                    setupUnFullScreen();
-                }
-                else
-                {
-                    setupFullScreen();
-                }
-                if (mVideoView.isPlaying())
-                {
-                    mHandler.removeMessages(HIDE_CONTROL_BAR);
-                    mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
-                }
-                break;
-        }
-    }
+    /**
+     * 屏幕宽度
+     */
+    private int mScreenWidth = 0;
 
-    private Handler mHandler = new Handler()
-    {
+    /**
+     * 是否为全屏
+     */
+    private boolean mIsFullScreen = false;
+
+    /**
+     * 视频总时间
+     */
+    private long mVideoTotalTime = 0;
+
+    /**
+     * 是否 快进/快退
+     */
+    private boolean mIntoSeek = false;
+
+    /**
+     * 快进的进度
+     */
+    private long mSeek = 0;
+
+    /**
+     * 是否停止调整进度
+     */
+    private boolean mIsFastFinish = false;
+
+    private GestureDetector mGestureDetector;
+    private AudioManager mAudioManager;
+
+    /**
+     * 视频最大音量
+     */
+    private int mMaxVolume;
+
+    /**
+     * 当前音量
+     */
+    private int mShowVolume;
+
+    /**
+     * 当前亮度
+     */
+    private int mShowLightness;
+
+    /**
+     * 视频地址
+     */
+    private String mPlayUrl = "http://hd.yinyuetai.com/uploads/videos/common/" +
+            "D777015139CEB3E600E048A98570437E.flv?sc=628a84be651d38bb";
+
+    private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg)
-        {
-            switch (msg.what)
-            {
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
                 case UPDATE_PLAY_TIME:
                     long currentPosition = mVideoView.getCurrentPosition();
-                    if (currentPosition <= mVideoTotalTime)
-                    {
-                        //更新时间显示
-                        mTvTime.setText(sec2time(currentPosition) + "/" + sec2time(mVideoTotalTime));
-                        //更新进度条
+                    if (currentPosition <= mVideoTotalTime) {
+                        // 更新时间显示
+                        mTvTime.setText(String.format("%s/%s", sec2time(currentPosition), sec2time(mVideoTotalTime)));
+                        // 更新进度条
                         int progress = (int) ((currentPosition * 1.0 / mVideoTotalTime) * 100);
                         mSeekBar.setProgress(progress);
                         mHandler.sendEmptyMessageDelayed(UPDATE_PLAY_TIME, UPDATE_TIME);
@@ -171,24 +203,69 @@ public class VideoPlayActivity extends AppCompatActivity
                 case SHOW_CENTER_CONTROL:
                     mControlCenter.setVisibility(View.GONE);
                     break;
+                default:
+                    break;
             }
+            return false;
         }
-    };
+    });
+
+    @OnClick({R.id.iv_back, R.id.iv_play, R.id.iv_is_fullscreen})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_back:
+                if (mIsFullScreen) {
+                    if (mVideoView.isPlaying()) {
+                        mHandler.removeMessages(HIDE_CONTROL_BAR);
+                        mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
+                    }
+                    setupUnFullScreen();
+                } else {
+                    finish();
+                }
+                break;
+            case R.id.iv_play:
+                if (mVideoView.isPlaying()) {
+                    mVideoView.pause();
+                    mIvPlay.setImageResource(R.mipmap.video_play);
+                    mHandler.removeMessages(UPDATE_PLAY_TIME);
+                    mHandler.removeMessages(HIDE_CONTROL_BAR);
+                    showControlBar();
+                } else {
+                    mVideoView.start();
+                    mIvPlay.setImageResource(R.mipmap.video_pause);
+                    mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
+                    mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
+                }
+                break;
+            case R.id.iv_is_fullscreen:
+                if (mIsFullScreen) {
+                    setupUnFullScreen();
+                } else {
+                    setupFullScreen();
+                }
+                if (mVideoView.isPlaying()) {
+                    mHandler.removeMessages(HIDE_CONTROL_BAR);
+                    mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     /**
      * 秒转化为常见格式
      *
-     * @param time
+     * @param time 时间
      * @return
      */
-    private String sec2time(long time)
-    {
+    private String sec2time(long time) {
         return StringUtils.generateTime(time);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Vitamio.isInitialized(this);
         setContentView(R.layout.activity_video_play);
@@ -197,15 +274,14 @@ public class VideoPlayActivity extends AppCompatActivity
         init();
     }
 
-    private void init()
-    {
-        //获取屏幕宽度
+    private void init() {
+        // 获取屏幕宽度
         Pair<Integer, Integer> screenPair = ScreenResolution.getResolution(this);
         mScreenWidth = screenPair.first;
-        //播放网络资源
+        // 设置网络资源地址
         mVideoView.setVideoPath(mPlayUrl);
-        //设置缓冲大小为2M
-        mVideoView.setBufferSize(1024*1024*2);
+        // 设置缓冲大小为2M
+        mVideoView.setBufferSize(1024 * 1024 * 2);
 
         initVolumeWithLight();
         addVideoViewListener();
@@ -216,8 +292,7 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 初始化声音和亮度
      */
-    private void initVolumeWithLight()
-    {
+    private void initVolumeWithLight() {
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         mShowVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / mMaxVolume;
@@ -227,9 +302,8 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 获得当前屏幕亮度值 0--255
      */
-    private int getScreenBrightness()
-    {
-        int screenBrightness = 255;
+    private int getScreenBrightness() {
+        int screenBrightness = MAX_LIGHTNESS;
         try {
             screenBrightness = Settings.System.getInt(getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS);
@@ -242,62 +316,63 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 为VideoView添加监听
      */
-    private void addVideoViewListener()
-    {
-        //准备播放完成
+    private void addVideoViewListener() {
+        // 准备播放完成
         mVideoView.setOnPreparedListener(mp ->
         {
-            //获取播放总时长
+            // 获取播放总时长
             mVideoTotalTime = mVideoView.getDuration();
         });
 
-        //正在缓冲
+        // 正在缓冲
         mVideoView.setOnBufferingUpdateListener((mp, percent) ->
         {
-            if (!mIntoSeek)
+            if (!mIntoSeek) {
                 mProgressBar.setVisibility(View.VISIBLE);
+            }
 
             mHandler.removeMessages(UPDATE_PLAY_TIME);
             mHandler.removeMessages(HIDE_TIME);
-            mIvPlay.setImageResource(R.drawable.video_play);
+            mIvPlay.setImageResource(R.mipmap.video_play);
 
-            if (mVideoView.isPlaying())
+            if (mVideoView.isPlaying()) {
                 mVideoView.pause();
+            }
         });
 
         mVideoView.setOnInfoListener((mp, what, extra) ->
         {
-            switch (what)
-            {
-                //缓冲完成
+            switch (what) {
+                // 缓冲完成
                 case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                    mIvPlay.setImageResource(R.drawable.video_pause);
-                    mHandler.removeMessages(UPDATE_PLAY_TIME);
-                    mHandler.removeMessages(HIDE_CONTROL_BAR);
-                    mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
-                    mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
-                    mProgressBar.setVisibility(View.GONE);
-
-                    if (!mVideoView.isPlaying())
+                    if (!mVideoView.isPlaying()) {
                         mVideoView.start();
+                        mIvPlay.setImageResource(R.mipmap.video_pause);
+                        mHandler.removeMessages(UPDATE_PLAY_TIME);
+                        mHandler.removeMessages(HIDE_CONTROL_BAR);
+                        mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
+                        mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                    break;
+                default:
                     break;
             }
 
             return true;
         });
 
-        //视频播放出错
+        // 视频播放出错
         mVideoView.setOnErrorListener((mp, what, extra) ->
         {
-            if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN)
-            {
+            if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN) {
                 Toast.makeText(VideoPlayActivity.this, "该视频无法播放！", Toast.LENGTH_SHORT).show();
             }
 
             return true;
         });
 
-        //视频播放完成
+        // 视频播放完成
         mVideoView.setOnCompletionListener(mp ->
         {
             Toast.makeText(VideoPlayActivity.this, "视频播放完成", Toast.LENGTH_SHORT).show();
@@ -309,28 +384,23 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 为SeekBar添加监听
      */
-    private void addSeekBarListener()
-    {
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
-        {
+    private void addSeekBarListener() {
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b)
-            {
-                long progress = (long) (seekBar.getProgress()*1.0/100*mVideoView.getDuration());
-                mTvTime.setText(sec2time(progress)+"/"+sec2time(mVideoTotalTime));
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                long progress = (long) (seekBar.getProgress() * 1.0 / 100 * mVideoView.getDuration());
+                mTvTime.setText(String.format("%s/%s", sec2time(progress), sec2time(mVideoTotalTime)));
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
+            public void onStartTrackingTouch(SeekBar seekBar) {
                 mHandler.removeMessages(UPDATE_PLAY_TIME);
                 mHandler.removeMessages(HIDE_CONTROL_BAR);
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
-                long progress = (long) (seekBar.getProgress()*1.0/100*mVideoView.getDuration());
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                long progress = (long) (seekBar.getProgress() * 1.0 / 100 * mVideoView.getDuration());
                 mVideoView.seekTo(progress);
                 mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
             }
@@ -340,17 +410,16 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 添加手势操作
      */
-    private void addTouchListener()
-    {
-        mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener()
-        {
-            //滑动操作
+    private void addTouchListener() {
+        GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+            // 滑动操作
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                    float distanceX, float distanceY)
-            {
-                if (!mIsFullScreen)//非全屏不进行手势操作
+                                    float distanceX, float distanceY) {
+                // 非全屏不进行手势操作
+                if (!mIsFullScreen) {
                     return false;
+                }
 
                 float x1 = e1.getX();
                 float y1 = e1.getY();
@@ -359,40 +428,34 @@ public class VideoPlayActivity extends AppCompatActivity
                 float absX = Math.abs(x1 - x2);
                 float absY = Math.abs(y1 - y2);
 
-                float absDistanceX = Math.abs(distanceX);// distanceX < 0 从左到右
-                float absDistanceY = Math.abs(distanceY);// distanceY < 0 从上到下
+                // distanceX < 0 从左到右
+                float absDistanceX = Math.abs(distanceX);
+                // distanceY < 0 从上到下
+                float absDistanceY = Math.abs(distanceY);
 
                 // Y方向的距离比X方向的大，即 上下 滑动
-                if (absDistanceX < absDistanceY && !mIntoSeek)
-                {
-                    if (distanceY > 0)
-                    {//向上滑动
-                        if (x1 >= mScreenWidth*0.65)
-                        {//右边调节声音
+                if (absDistanceX < absDistanceY && !mIntoSeek) {
+                    if (distanceY > 0) {
+                        // 向上滑动
+                        if (x1 >= mScreenWidth * SLIP_SENSITIVITY) {
+                            // 右边调节声音
                             changeVolume(ADD_FLAG);
-                        }
-                        else
-                        {//调节亮度
+                        } else {
+                            // 调节亮度
                             changeLightness(ADD_FLAG);
                         }
-                    }
-                    else
-                    {//向下滑动
-                        if (x1 >= mScreenWidth*0.65)
-                        {
+                    } else {
+                        // 向下滑动
+                        if (x1 >= mScreenWidth * SLIP_SENSITIVITY) {
                             changeVolume(SUB_FLAG);
-                        }
-                        else
-                        {
+                        } else {
                             changeLightness(SUB_FLAG);
                         }
                     }
 
-                }
-                else
-                {// X方向的距离比Y方向的大，即 左右 滑动
-                    if (absX > absY)
-                    {
+                } else {
+                    // X方向的距离比Y方向的大，即 左右 滑动
+                    if (absX > absY) {
                         mIntoSeek = true;
                         onSeekChange(x1, x2);
                         return true;
@@ -402,28 +465,37 @@ public class VideoPlayActivity extends AppCompatActivity
                 return false;
             }
 
-            //双击事件，支持双击播放暂停，可从这实现
+            // 双击播放暂停
             @Override
-            public boolean onDoubleTap(MotionEvent e)
-            {
-                return super.onDoubleTap(e);
+            public boolean onDoubleTap(MotionEvent e) {
+                if (mIsFullScreen) {
+                    if (mVideoView.isPlaying()) {
+                        mVideoView.pause();
+                        mIvPlay.setImageResource(R.mipmap.video_play);
+                        mHandler.removeMessages(UPDATE_PLAY_TIME);
+                        mHandler.removeMessages(HIDE_CONTROL_BAR);
+                        showControlBar();
+                    } else {
+                        mVideoView.start();
+                        mIvPlay.setImageResource(R.mipmap.video_pause);
+                        mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
+                        mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
+                    }
+                }
+                return true;
             }
 
-            //单击事件
+            // 单击事件
             @Override
-            public boolean onSingleTapConfirmed(MotionEvent e)
-            {
-
-                if (!mVideoView.isPlaying())
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (!mVideoView.isPlaying()) {
                     return false;
+                }
 
-                if (mControlBottom.getVisibility() == View.VISIBLE)
-                {
+                if (mControlBottom.getVisibility() == View.VISIBLE) {
                     mHandler.removeMessages(HIDE_CONTROL_BAR);
                     hideControlBar();
-                }
-                else
-                {
+                } else {
                     showControlBar();
                     mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
                 }
@@ -436,17 +508,16 @@ public class VideoPlayActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        if (mGestureDetector != null)
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mGestureDetector != null) {
             mGestureDetector.onTouchEvent(event);
+        }
 
-        if (event.getAction() == MotionEvent.ACTION_UP)
-        {//手指抬起
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            // 手指抬起
             mTvFast.setVisibility(View.GONE);
             mIntoSeek = false;
-            if (mIsFastFinish)
-            {
+            if (mIsFastFinish) {
                 mVideoView.seekTo(mSeek);
                 mIsFastFinish = false;
             }
@@ -458,58 +529,47 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 左右滑动距离计算快进/快退时间
      */
-    private void onSeekChange(float x1, float x2)
-    {
+    private void onSeekChange(float x1, float x2) {
         long currentPosition = mVideoView.getCurrentPosition();
         long seek;
 
-        if (x1 - x2 > 200)
-        {//向左滑
-            if (currentPosition < 10000)
-            {
+        if (x1 - x2 > MIN_SLIP_DISTANCE) {
+            // 向左滑
+            if (currentPosition < MAX_SLIP_DISTANCE) {
                 currentPosition = 0;
                 seek = 0;
                 setFlashText(seek);
                 mVideoView.seekTo(currentPosition);
-            }
-            else
-            {
+            } else {
                 float distance = (x1 - x2);
-                mVideoView.seekTo(currentPosition - (long)distance*10);
-                seek = currentPosition - (long)distance*10;
+                mVideoView.seekTo(currentPosition - (long) distance * 10);
+                seek = currentPosition - (long) distance * 10;
                 setFlashText(seek);
             }
-        }
-        else if (x2 - x1 > 200)
-        { //向右滑动
-            if (currentPosition+10000>mVideoView.getDuration())
-            {
+        } else if (x2 - x1 > MIN_SLIP_DISTANCE) {
+            // 向右滑动
+            if (currentPosition + MAX_SLIP_DISTANCE > mVideoView.getDuration()) {
                 currentPosition = mVideoView.getDuration();
                 mVideoView.seekTo(currentPosition);
                 seek = currentPosition;
                 setFlashText(seek);
-            }
-            else
-            {
+            } else {
                 float distance = x2 - x1;
-                mVideoView.seekTo(currentPosition+(long)distance*10);
-                seek = currentPosition+(long)distance*10;
+                mVideoView.seekTo(currentPosition + (long) distance * 10);
+                seek = currentPosition + (long) distance * 10;
                 setFlashText(seek);
             }
         }
-
     }
 
-    private void setFlashText(long seek)
-    {
+    private void setFlashText(long seek) {
         String showTime = StringUtils.generateTime(seek) +
                 "/" + StringUtils.generateTime(mVideoView.getDuration());
         mTvFast.setText(showTime);
         mSeek = seek;
         mIsFastFinish = true;
 
-        if (mTvFast.getVisibility() != View.VISIBLE)
-        {
+        if (mTvFast.getVisibility() != View.VISIBLE) {
             mTvFast.setVisibility(View.VISIBLE);
         }
     }
@@ -517,21 +577,17 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 改变声音
      */
-    private void changeVolume(int flag)
-    {
+    private void changeVolume(int flag) {
         mShowVolume += flag;
-        if (mShowVolume > 100)
-        {
-            mShowVolume = 100;
+        if (mShowVolume > MAX_VOLUME) {
+            mShowVolume = MAX_VOLUME;
+        } else if (mShowVolume < MIN_VOLUME) {
+            mShowVolume = MIN_VOLUME;
         }
-        else if (mShowVolume < 0)
-        {
-            mShowVolume = 0;
-        }
-        mIvControlImg.setImageResource(R.drawable.volume_icon);
-        mTvControl.setText(mShowVolume+"%");
+        mIvControlImg.setImageResource(R.mipmap.volume_icon);
+        mTvControl.setText(mShowVolume + "%");
         int tagVolume = mShowVolume * mMaxVolume / 100;
-        //tagVolume:音量绝对值
+        // tagVolume:音量绝对值
         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, tagVolume, 0);
 
         mHandler.removeMessages(SHOW_CENTER_CONTROL);
@@ -542,19 +598,15 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 改变亮度
      */
-    private void changeLightness(int flag)
-    {
+    private void changeLightness(int flag) {
         mShowLightness += flag;
-        if (mShowLightness > 255)
-        {
-            mShowLightness = 255;
+        if (mShowLightness > MAX_LIGHTNESS) {
+            mShowLightness = MAX_LIGHTNESS;
+        } else if (mShowLightness <= MIN_LIGHTNESS) {
+            mShowLightness = MIN_LIGHTNESS;
         }
-        else if (mShowLightness <= 0 )
-        {
-            mShowLightness = 0;
-        }
-        mIvControlImg.setImageResource(R.drawable.lightness_icon);
-        mTvControl.setText(mShowLightness * 100 / 255+"%");
+        mIvControlImg.setImageResource(R.mipmap.lightness_icon);
+        mTvControl.setText(mShowLightness * 100 / 255 + "%");
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = mShowLightness / 255f;
         getWindow().setAttributes(lp);
@@ -567,8 +619,7 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 隐藏控制条
      */
-    private void hideControlBar()
-    {
+    private void hideControlBar() {
         mControlBottom.setVisibility(View.GONE);
         mControlTop.setVisibility(View.GONE);
     }
@@ -576,8 +627,7 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 显示控制条
      */
-    private void showControlBar()
-    {
+    private void showControlBar() {
         mControlBottom.setVisibility(View.VISIBLE);
         mControlTop.setVisibility(View.VISIBLE);
     }
@@ -585,27 +635,26 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 设置为全屏
      */
-    private void setupFullScreen()
-    {
-        //设置窗口模式
+    private void setupFullScreen() {
+        // 设置窗口模式
         WindowManager.LayoutParams attrs = getWindow().getAttributes();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
         getWindow().setAttributes(attrs);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        //获取屏幕尺寸
+        // 获取屏幕尺寸
         WindowManager manager = this.getWindowManager();
         DisplayMetrics metrics = new DisplayMetrics();
         manager.getDefaultDisplay().getMetrics(metrics);
 
-        //设置Video布局尺寸
+        // 设置Video布局尺寸
         mVideoLayout.getLayoutParams().width = metrics.widthPixels;
         mVideoLayout.getLayoutParams().height = metrics.heightPixels;
 
-        //设置为全屏拉伸
+        // 设置为全屏拉伸
         mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);
-        mIvIsFullscreen.setImageResource(R.drawable.not_fullscreen);
+        mIvIsFullscreen.setImageResource(R.mipmap.not_fullscreen);
 
         mIsFullScreen = true;
     }
@@ -613,8 +662,7 @@ public class VideoPlayActivity extends AppCompatActivity
     /**
      * 设置为非全屏
      */
-    private void setupUnFullScreen()
-    {
+    private void setupUnFullScreen() {
         WindowManager.LayoutParams attrs = getWindow().getAttributes();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -626,18 +674,16 @@ public class VideoPlayActivity extends AppCompatActivity
         mVideoLayout.getLayoutParams().width = (int) width;
         mVideoLayout.getLayoutParams().height = (int) height;
 
-        //设置为全屏
+        // 设置为全屏
         mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);
-        mIvIsFullscreen.setImageResource(R.drawable.play_fullscreen);
+        mIvIsFullscreen.setImageResource(R.mipmap.play_fullscreen);
 
         mIsFullScreen = false;
     }
 
     @Override
-    public void onBackPressed()
-    {
-        if (mIsFullScreen)
-        {
+    public void onBackPressed() {
+        if (mIsFullScreen) {
             setupUnFullScreen();
         } else {
             super.onBackPressed();
@@ -646,29 +692,28 @@ public class VideoPlayActivity extends AppCompatActivity
 
     /**
      * dp转px
+     *
      * @param dpValue
      * @return
      */
-    private int dp2px(float dpValue)
-    {
+    private int dp2px(float dpValue) {
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         super.onStop();
-        //如果还在播放，则暂停
-        if (mVideoView.isPlaying())
+        // 如果还在播放，则暂停
+        if (mVideoView.isPlaying()) {
             mVideoView.pause();
+        }
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
-        //释放资源
+        // 释放资源
         mVideoView.stopPlayback();
     }
 }

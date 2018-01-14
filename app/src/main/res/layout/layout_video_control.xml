@@ -15,8 +15,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_back"
-            android:layout_marginLeft="12dp"/>
+            android:layout_marginLeft="12dp"
+            android:src="@mipmap/ic_back" />
 
         <!--<TextView
             android:id="@+id/tv_file_name"
@@ -44,46 +44,46 @@
             android:id="@+id/iv_play"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/video_play"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"/>
+            android:layout_marginLeft="12dp"
+            android:src="@mipmap/video_play" />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@+id/iv_play"
             android:maxLines="1"
             android:text="00:00/00:00"
             android:textColor="@android:color/white"
-            android:layout_centerVertical="true"
-            android:textSize="12sp"
-            android:layout_toRightOf="@+id/iv_play"
-            android:layout_marginLeft="12dp"/>
+            android:textSize="12sp" />
 
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
             android:layout_toLeftOf="@+id/iv_is_fullscreen"
             android:layout_toRightOf="@+id/tv_time"
-            android:layout_marginRight="12dp"
-            android:layout_marginLeft="12dp"
-            android:progressDrawable="@drawable/seekbar_layer_list"
-            android:thumb="@drawable/seekbar_thumb"
+            android:max="100"
             android:maxHeight="3dp"
             android:minHeight="3dp"
-            android:max="100"
-            android:progress="0" />
+            android:progress="0"
+            android:progressDrawable="@drawable/seekbar_layer_list"
+            android:thumb="@drawable/seekbar_thumb" />
 
         <ImageView
             android:id="@+id/iv_is_fullscreen"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/play_fullscreen"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="12dp"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:src="@mipmap/play_fullscreen" />
 
     </RelativeLayout>
 
@@ -93,19 +93,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
+
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="正在缓冲..."
-            android:textSize="12sp"
-            android:textColor="@color/colorAccent"
             android:layout_below="@+id/progress"
             android:layout_marginTop="3dp"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:text="正在缓冲..."
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <!--中部控制 亮度 声音-->
@@ -113,30 +115,32 @@
         android:id="@+id/control_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
         android:background="@drawable/control_shape"
-        android:paddingTop="8dp"
+        android:orientation="vertical"
         android:paddingBottom="8dp"
-        android:paddingRight="16dp"
         android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
         android:visibility="gone">
+
         <ImageView
             android:id="@+id/iv_control_img"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/volume_icon"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/volume_icon" />
+
         <TextView
             android:id="@+id/tv_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
             android:maxLines="1"
             android:text="12%"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
     <!--快进-->
@@ -144,15 +148,15 @@
         android:id="@+id/tv_fast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/control_shape"
-        android:text="00:00/00:00"
-        android:textSize="14sp"
-        android:textColor="@android:color/white"
         android:layout_gravity="center"
+        android:background="@drawable/control_shape"
+        android:paddingBottom="8dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:visibility="gone"/>
+        android:text="00:00/00:00"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
 </FrameLayout>

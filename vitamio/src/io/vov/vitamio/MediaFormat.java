@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package io.vov.vitamio;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,25 +23,25 @@ import java.util.Map;
 /**
  * Encapsulates the information describing the format of media data,
  * be it audio or video.
- *
+ * <p>
  * The format of the media data is specified as string/value pairs.
- *
+ * <p>
  * Keys common to all audio/video formats, <b>all keys not marked optional are mandatory</b>:
- *
+ * <p>
  * <table>
  * <tr><th>Name</th><th>Value Type</th><th>Description</th></tr>
  * <tr><td>{@link #KEY_MIME}</td><td>String</td><td>The type of the format.</td></tr>
  * <tr><td>{@link #KEY_MAX_INPUT_SIZE}</td><td>Integer</td><td>optional, maximum size of a buffer of input data</td></tr>
  * <tr><td>{@link #KEY_BIT_RATE}</td><td>Integer</td><td><b>encoder-only</b>, desired bitrate in bits/second</td></tr>
  * </table>
- *
+ * <p>
  * Video formats have the following keys:
  * <table>
  * <tr><th>Name</th><th>Value Type</th><th>Description</th></tr>
  * <tr><td>{@link #KEY_WIDTH}</td><td>Integer</td><td></td></tr>
  * <tr><td>{@link #KEY_HEIGHT}</td><td>Integer</td><td></td></tr>
  * <tr><td>{@link #KEY_COLOR_FORMAT}</td><td>Integer</td><td>set by the user
- *         for encoders, readable in the output format of decoders</b></td></tr>
+ * for encoders, readable in the output format of decoders</b></td></tr>
  * <tr><td>{@link #KEY_FRAME_RATE}</td><td>Integer or Float</td><td><b>encoder-only</b></td></tr>
  * <tr><td>{@link #KEY_I_FRAME_INTERVAL}</td><td>Integer</td><td><b>encoder-only</b></td></tr>
  * <tr><td>{@link #KEY_MAX_WIDTH}</td><td>Integer</td><td><b>decoder-only</b>, optional, max-resolution width</td></tr>
@@ -56,7 +57,7 @@ import java.util.Map;
  * maximum resolution may require more memory even if that resolution is never
  * reached.  These fields have no effect for codecs that do not support adaptive
  * playback.<br /><br />
- *
+ * <p>
  * Audio formats have the following keys:
  * <table>
  * <tr><th>Name</th><th>Value Type</th><th>Description</th></tr>
@@ -67,7 +68,7 @@ import java.util.Map;
  * <tr><td>{@link #KEY_CHANNEL_MASK}</td><td>Integer</td><td>optional, a mask of audio channel assignments</td></tr>
  * <tr><td>{@link #KEY_FLAC_COMPRESSION_LEVEL}</td><td>Integer</td><td><b>encoder-only</b>, optional, if content is FLAC audio, specifies the desired compression level.</td></tr>
  * </table>
- *
+ * <p>
  * Subtitle formats have the following keys:
  * <table>
  * <tr><td>{@link #KEY_MIME}</td><td>String</td><td>The type of the format.</td></tr>
@@ -75,99 +76,83 @@ import java.util.Map;
  * </table>
  */
 public final class MediaFormat {
-    private Map<String, Object> mMap;
-
     /**
      * A key describing the mime type of the MediaFormat.
      * The associated value is a string.
      */
     public static final String KEY_MIME = "mime";
-
     /**
      * A key describing the language of the content, using either ISO 639-1
      * or 639-2/T codes.  The associated value is a string.
      */
     public static final String KEY_LANGUAGE = "language";
-    
     /**
      * A key describing the title of the content
      */
     public static final String KEY_TITLE = "title";
-    
     /**
      * A key describing the external subtitle path
      */
     public static final String KEY_PATH = "path";
-
     /**
      * A key describing the sample rate of an audio format.
      * The associated value is an integer
      */
     public static final String KEY_SAMPLE_RATE = "sample-rate";
-
     /**
      * A key describing the number of channels in an audio format.
      * The associated value is an integer
      */
     public static final String KEY_CHANNEL_COUNT = "channel-count";
-
     /**
      * A key describing the width of the content in a video format.
      * The associated value is an integer
      */
     public static final String KEY_WIDTH = "width";
-
     /**
      * A key describing the height of the content in a video format.
      * The associated value is an integer
      */
     public static final String KEY_HEIGHT = "height";
-
     /**
      * A key describing the maximum expected width of the content in a video
      * decoder format, in case there are resolution changes in the video content.
      * The associated value is an integer
      */
     public static final String KEY_MAX_WIDTH = "max-width";
-
     /**
      * A key describing the maximum expected height of the content in a video
      * decoder format, in case there are resolution changes in the video content.
      * The associated value is an integer
      */
     public static final String KEY_MAX_HEIGHT = "max-height";
-
-    /** A key describing the maximum size in bytes of a buffer of data
+    /**
+     * A key describing the maximum size in bytes of a buffer of data
      * described by this MediaFormat.
      * The associated value is an integer
      */
     public static final String KEY_MAX_INPUT_SIZE = "max-input-size";
-
     /**
      * A key describing the bitrate in bits/sec.
      * The associated value is an integer
      */
     public static final String KEY_BIT_RATE = "bitrate";
-
     /**
      * A key describing the color format of the content in a video format.
      * Constants are declared in {@link android.media.MediaCodecInfo.CodecCapabilities}.
      */
     public static final String KEY_COLOR_FORMAT = "color-format";
-
     /**
      * A key describing the frame rate of a video format in frames/sec.
      * The associated value is an integer or a float.
      */
     public static final String KEY_FRAME_RATE = "frame-rate";
-
     /**
      * A key describing the frequency of I frames expressed in secs
      * between I frames.
      * The associated value is an integer.
      */
     public static final String KEY_I_FRAME_INTERVAL = "i-frame-interval";
-
     /**
      * @hide
      */
@@ -176,7 +161,6 @@ public final class MediaFormat {
      * @hide
      */
     public static final String KEY_SLICE_HEIGHT = "slice-height";
-
     /**
      * Applies only when configuring a video encoder in "surface-input" mode.
      * The associated value is a long and gives the time in microseconds
@@ -184,8 +168,7 @@ public final class MediaFormat {
      * repeated (once) if no new frame became available since.
      */
     public static final String KEY_REPEAT_PREVIOUS_FRAME_AFTER
-        = "repeat-previous-frame-after";
-
+            = "repeat-previous-frame-after";
     /**
      * If specified when configuring a video decoder rendering to a surface,
      * causes the decoder to output "blank", i.e. black frames to the surface
@@ -193,14 +176,12 @@ public final class MediaFormat {
      * The associated value is an integer of value 1.
      */
     public static final String KEY_PUSH_BLANK_BUFFERS_ON_STOP
-        = "push-blank-buffers-on-shutdown";
-
+            = "push-blank-buffers-on-shutdown";
     /**
      * A key describing the duration (in microseconds) of the content.
      * The associated value is a long.
      */
     public static final String KEY_DURATION = "durationUs";
-
     /**
      * A key mapping to a value of 1 if the content is AAC audio and
      * audio frames are prefixed with an ADTS header.
@@ -209,27 +190,23 @@ public final class MediaFormat {
      * be used to configure an encoder to emit ADTS output.
      */
     public static final String KEY_IS_ADTS = "is-adts";
-
     /**
      * A key describing the channel composition of audio content. This mask
      * is composed of bits drawn from channel mask definitions in {@link android.media.AudioFormat}.
      * The associated value is an integer.
      */
     public static final String KEY_CHANNEL_MASK = "channel-mask";
-
     /**
      * A key describing the AAC profile to be used (AAC audio formats only).
      * Constants are declared in {@link android.media.MediaCodecInfo.CodecProfileLevel}.
      */
     public static final String KEY_AAC_PROFILE = "aac-profile";
-
     /**
      * A key describing the FLAC compression level to be used (FLAC audio format only).
      * The associated value is an integer ranging from 0 (fastest, least compression)
      * to 8 (slowest, most compression).
      */
     public static final String KEY_FLAC_COMPRESSION_LEVEL = "flac-compression-level";
-
     /**
      * A key for boolean AUTOSELECT behavior for the track. Tracks with AUTOSELECT=true
      * are considered when automatically selecting a track without specific user
@@ -240,7 +217,6 @@ public final class MediaFormat {
      * field; if not specified, AUTOSELECT defaults to TRUE.
      */
     public static final String KEY_IS_AUTOSELECT = "is-autoselect";
-
     /**
      * A key for boolean DEFAULT behavior for the track. The track with DEFAULT=true is
      * selected in the absence of a specific user choice.
@@ -250,8 +226,6 @@ public final class MediaFormat {
      * field; if not specified, DEFAULT is considered to be FALSE.
      */
     public static final String KEY_IS_DEFAULT = "is-default";
-
-
     /**
      * A key for the FORCED field for subtitle tracks. True if it is a
      * forced subtitle track.  Forced subtitle tracks are essential for the
@@ -261,6 +235,7 @@ public final class MediaFormat {
      * optional field; if not specified, FORCED defaults to FALSE.
      */
     public static final String KEY_IS_FORCED_SUBTITLE = "is-forced-subtitle";
+    private Map<String, Object> mMap;
 
     /* package private */ MediaFormat(Map<String, Object> map) {
         mMap = map;
@@ -271,6 +246,63 @@ public final class MediaFormat {
      */
     public MediaFormat() {
         mMap = new HashMap<String, Object>();
+    }
+
+    /**
+     * Creates a minimal audio format.
+     *
+     * @param mime         The mime type of the content.
+     * @param sampleRate   The sampling rate of the content.
+     * @param channelCount The number of audio channels in the content.
+     */
+    public static final MediaFormat createAudioFormat(
+            String mime,
+            int sampleRate,
+            int channelCount) {
+        MediaFormat format = new MediaFormat();
+        format.setString(KEY_MIME, mime);
+        format.setInteger(KEY_SAMPLE_RATE, sampleRate);
+        format.setInteger(KEY_CHANNEL_COUNT, channelCount);
+
+        return format;
+    }
+
+    /**
+     * Creates a minimal subtitle format.
+     *
+     * @param title    The content of the Subtitle
+     * @param language The language of the content, using either ISO 639-1 or 639-2/T
+     *                 codes.  Specify null or "und" if language information is only included
+     *                 in the content.  (This will also work if there are multiple language
+     *                 tracks in the content.)
+     */
+    public static final MediaFormat createSubtitleFormat(
+            String title,
+            String language) {
+        MediaFormat format = new MediaFormat();
+        format.setString(KEY_TITLE, title);
+        format.setString(KEY_LANGUAGE, language);
+
+        return format;
+    }
+
+    /**
+     * Creates a minimal video format.
+     *
+     * @param mime   The mime type of the content.
+     * @param width  The width of the content (in pixels)
+     * @param height The height of the content (in pixels)
+     */
+    public static final MediaFormat createVideoFormat(
+            String mime,
+            int width,
+            int height) {
+        MediaFormat format = new MediaFormat();
+        format.setString(KEY_MIME, mime);
+        format.setInteger(KEY_WIDTH, width);
+        format.setInteger(KEY_HEIGHT, height);
+
+        return format;
     }
 
     /* package private */ Map<String, Object> getMap() {
@@ -288,20 +320,19 @@ public final class MediaFormat {
      * Returns the value of an integer key.
      */
     public final int getInteger(String name) {
-        return ((Integer)mMap.get(name)).intValue();
+        return ((Integer) mMap.get(name)).intValue();
     }
 
     /**
      * Returns the value of an integer key, or the default value if the
      * key is missing or is for another type value.
+     *
      * @hide
      */
     public final int getInteger(String name, int defaultValue) {
         try {
             return getInteger(name);
-        }
-        catch (NullPointerException  e) { /* no such field */ }
-        catch (ClassCastException e) { /* field of different type */ }
+        } catch (NullPointerException e) { /* no such field */ } catch (ClassCastException e) { /* field of different type */ }
         return defaultValue;
     }
 
@@ -309,28 +340,28 @@ public final class MediaFormat {
      * Returns the value of a long key.
      */
     public final long getLong(String name) {
-        return ((Long)mMap.get(name)).longValue();
+        return ((Long) mMap.get(name)).longValue();
     }
 
     /**
      * Returns the value of a float key.
      */
     public final float getFloat(String name) {
-        return ((Float)mMap.get(name)).floatValue();
+        return ((Float) mMap.get(name)).floatValue();
     }
 
     /**
      * Returns the value of a string key.
      */
     public final String getString(String name) {
-        return (String)mMap.get(name);
+        return (String) mMap.get(name);
     }
 
     /**
      * Returns the value of a ByteBuffer key.
      */
     public final ByteBuffer getByteBuffer(String name) {
-        return (ByteBuffer)mMap.get(name);
+        return (ByteBuffer) mMap.get(name);
     }
 
     /**
@@ -366,60 +397,6 @@ public final class MediaFormat {
      */
     public final void setByteBuffer(String name, ByteBuffer bytes) {
         mMap.put(name, bytes);
-    }
-
-    /**
-     * Creates a minimal audio format.
-     * @param mime The mime type of the content.
-     * @param sampleRate The sampling rate of the content.
-     * @param channelCount The number of audio channels in the content.
-     */
-    public static final MediaFormat createAudioFormat(
-            String mime,
-            int sampleRate,
-            int channelCount) {
-        MediaFormat format = new MediaFormat();
-        format.setString(KEY_MIME, mime);
-        format.setInteger(KEY_SAMPLE_RATE, sampleRate);
-        format.setInteger(KEY_CHANNEL_COUNT, channelCount);
-
-        return format;
-    }
-
-    /**
-     * Creates a minimal subtitle format.
-     * @param title The content of the Subtitle
-     * @param language The language of the content, using either ISO 639-1 or 639-2/T
-     *        codes.  Specify null or "und" if language information is only included
-     *        in the content.  (This will also work if there are multiple language
-     *        tracks in the content.)
-     */
-    public static final MediaFormat createSubtitleFormat(
-            String title,
-            String language) {
-        MediaFormat format = new MediaFormat();
-        format.setString(KEY_TITLE, title);
-        format.setString(KEY_LANGUAGE, language);
-
-        return format;
-    }
-
-    /**
-     * Creates a minimal video format.
-     * @param mime The mime type of the content.
-     * @param width The width of the content (in pixels)
-     * @param height The height of the content (in pixels)
-     */
-    public static final MediaFormat createVideoFormat(
-            String mime,
-            int width,
-            int height) {
-        MediaFormat format = new MediaFormat();
-        format.setString(KEY_MIME, mime);
-        format.setInteger(KEY_WIDTH, width);
-        format.setInteger(KEY_HEIGHT, height);
-
-        return format;
     }
 
     @Override

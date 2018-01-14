@@ -16,9 +16,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".VideoPlayActivity"
-            android:screenOrientation="nosensor"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".VideoPlayActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="nosensor" />
 
     </application>
 
