@@ -18,9 +18,9 @@
 
         <activity
             android:name=".VideoPlayActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="nosensor" />
-
     </application>
 
 </manifest>

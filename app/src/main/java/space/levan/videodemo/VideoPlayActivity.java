@@ -101,7 +101,7 @@ public class VideoPlayActivity extends AppCompatActivity {
      */
     private static final int MIN_LIGHTNESS = 0;
 
-    @BindView(R.id.videoview)
+    @BindView(R.id.videoView)
     VideoView mVideoView;
     @BindView(R.id.control_top)
     RelativeLayout mControlTop;
@@ -109,7 +109,7 @@ public class VideoPlayActivity extends AppCompatActivity {
     ImageView mIvPlay;
     @BindView(R.id.tv_time)
     TextView mTvTime;
-    @BindView(R.id.seekbar)
+    @BindView(R.id.seekBar)
     SeekBar mSeekBar;
     @BindView(R.id.iv_is_fullscreen)
     ImageView mIvIsFullscreen;
@@ -227,13 +227,13 @@ public class VideoPlayActivity extends AppCompatActivity {
             case R.id.iv_play:
                 if (mVideoView.isPlaying()) {
                     mVideoView.pause();
-                    mIvPlay.setImageResource(R.mipmap.video_play);
+                    mIvPlay.setImageResource(R.drawable.video_play);
                     mHandler.removeMessages(UPDATE_PLAY_TIME);
                     mHandler.removeMessages(HIDE_CONTROL_BAR);
                     showControlBar();
                 } else {
                     mVideoView.start();
-                    mIvPlay.setImageResource(R.mipmap.video_pause);
+                    mIvPlay.setImageResource(R.drawable.video_pause);
                     mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
                     mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
                 }
@@ -318,8 +318,7 @@ public class VideoPlayActivity extends AppCompatActivity {
      */
     private void addVideoViewListener() {
         // 准备播放完成
-        mVideoView.setOnPreparedListener(mp ->
-        {
+        mVideoView.setOnPreparedListener(mp -> {
             // 获取播放总时长
             mVideoTotalTime = mVideoView.getDuration();
         });
@@ -333,7 +332,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
             mHandler.removeMessages(UPDATE_PLAY_TIME);
             mHandler.removeMessages(HIDE_TIME);
-            mIvPlay.setImageResource(R.mipmap.video_play);
+            mIvPlay.setImageResource(R.drawable.video_play);
 
             if (mVideoView.isPlaying()) {
                 mVideoView.pause();
@@ -347,7 +346,7 @@ public class VideoPlayActivity extends AppCompatActivity {
                 case MediaPlayer.MEDIA_INFO_BUFFERING_END:
                     if (!mVideoView.isPlaying()) {
                         mVideoView.start();
-                        mIvPlay.setImageResource(R.mipmap.video_pause);
+                        mIvPlay.setImageResource(R.drawable.video_pause);
                         mHandler.removeMessages(UPDATE_PLAY_TIME);
                         mHandler.removeMessages(HIDE_CONTROL_BAR);
                         mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
@@ -471,13 +470,13 @@ public class VideoPlayActivity extends AppCompatActivity {
                 if (mIsFullScreen) {
                     if (mVideoView.isPlaying()) {
                         mVideoView.pause();
-                        mIvPlay.setImageResource(R.mipmap.video_play);
+                        mIvPlay.setImageResource(R.drawable.video_play);
                         mHandler.removeMessages(UPDATE_PLAY_TIME);
                         mHandler.removeMessages(HIDE_CONTROL_BAR);
                         showControlBar();
                     } else {
                         mVideoView.start();
-                        mIvPlay.setImageResource(R.mipmap.video_pause);
+                        mIvPlay.setImageResource(R.drawable.video_pause);
                         mHandler.sendEmptyMessage(UPDATE_PLAY_TIME);
                         mHandler.sendEmptyMessageDelayed(HIDE_CONTROL_BAR, HIDE_TIME);
                     }
@@ -584,8 +583,8 @@ public class VideoPlayActivity extends AppCompatActivity {
         } else if (mShowVolume < MIN_VOLUME) {
             mShowVolume = MIN_VOLUME;
         }
-        mIvControlImg.setImageResource(R.mipmap.volume_icon);
-        mTvControl.setText(mShowVolume + "%");
+        mIvControlImg.setImageResource(R.drawable.volume_icon);
+        mTvControl.setText(String.format("%s%%", mShowVolume));
         int tagVolume = mShowVolume * mMaxVolume / 100;
         // tagVolume:音量绝对值
         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, tagVolume, 0);
@@ -605,8 +604,8 @@ public class VideoPlayActivity extends AppCompatActivity {
         } else if (mShowLightness <= MIN_LIGHTNESS) {
             mShowLightness = MIN_LIGHTNESS;
         }
-        mIvControlImg.setImageResource(R.mipmap.lightness_icon);
-        mTvControl.setText(mShowLightness * 100 / 255 + "%");
+        mIvControlImg.setImageResource(R.drawable.lightness_icon);
+        mTvControl.setText(String.format("%s%%", mShowLightness * 100 / 255));
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = mShowLightness / 255f;
         getWindow().setAttributes(lp);
@@ -654,7 +653,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         // 设置为全屏拉伸
         mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);
-        mIvIsFullscreen.setImageResource(R.mipmap.not_fullscreen);
+        mIvIsFullscreen.setImageResource(R.drawable.not_fullscreen);
 
         mIsFullScreen = true;
     }
@@ -676,7 +675,7 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         // 设置为全屏
         mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);
-        mIvIsFullscreen.setImageResource(R.mipmap.play_fullscreen);
+        mIvIsFullscreen.setImageResource(R.drawable.play_fullscreen);
 
         mIsFullScreen = false;
     }

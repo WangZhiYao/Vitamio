@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,8 +16,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:src="@mipmap/ic_back" />
+            android:layout_marginStart="12dp"
+            android:src="@drawable/ic_back" />
 
         <!--<TextView
             android:id="@+id/tv_file_name"
@@ -45,30 +46,30 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:src="@mipmap/video_play" />
+            android:layout_marginStart="12dp"
+            android:src="@drawable/video_play" />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:layout_toRightOf="@+id/iv_play"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@+id/iv_play"
             android:maxLines="1"
-            android:text="00:00/00:00"
             android:textColor="@android:color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="00:00/00:00" />
 
         <SeekBar
-            android:id="@+id/seekbar"
+            android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:layout_toLeftOf="@+id/iv_is_fullscreen"
-            android:layout_toRightOf="@+id/tv_time"
+            android:layout_toEndOf="@+id/tv_time"
+            android:layout_toStartOf="@+id/iv_is_fullscreen"
             android:max="100"
             android:maxHeight="3dp"
             android:minHeight="3dp"
@@ -80,10 +81,10 @@
             android:id="@+id/iv_is_fullscreen"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:src="@mipmap/play_fullscreen" />
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/play_fullscreen" />
 
     </RelativeLayout>
 
@@ -129,7 +130,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center_horizontal"
-            android:src="@mipmap/volume_icon" />
+            android:src="@drawable/volume_icon" />
 
         <TextView
             android:id="@+id/tv_control"
@@ -138,9 +139,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:maxLines="1"
-            android:text="12%"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="12%" />
     </LinearLayout>
 
     <!--快进-->
@@ -154,9 +155,9 @@
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:paddingTop="8dp"
-        android:text="00:00/00:00"
         android:textColor="@android:color/white"
         android:textSize="14sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:text="00:00/00:00" />
 
 </FrameLayout>
