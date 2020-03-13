@@ -1,19 +1,20 @@
 # VideoDemo
-基于Vitamio,支持全屏播放，手势调整进度，音量，亮度，，基本满足市面上播放器要求  
+Based on Vitamio, support full screen, playback, gesture adjustment progress, volume, brightness
 
 ## 预览
-![预览][1]  
+<div align="center">
+    <img src="/screenshot/Screenshot_2018-01-14-00-38-35.png" height="768px">
+    <img src="/screenshot/Screenshot_2018-01-14-00-39-03.png" height="768px">
+</div>
 
-![预览][2]  
-
-![预览][3]  
-
-![预览][4]  
-
-![预览][5]  
+<div align="center">
+    <img src="/screenshot/Screenshot_2018-01-14-00-39-35.png">
+    <img src="/screenshot/Screenshot_2018-01-14-01-07-23.png">
+    <img src="/screenshot/Screenshot_2018-01-14-01-07-33.png">
+</div>
 
 ## LICENSE
-    Copyright 2018 WangZhiYao
+    Copyright 2020 WangZhiYao
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,8 +28,3 @@
     See the License for the specific language governing permissions and
     limitations under the License.
     
-[1]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-00-38-35.png
-[2]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-00-39-03.png
-[3]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-00-39-35.png
-[4]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-01-07-23.png
-[5]:https://raw.githubusercontent.com/WangZhiYao/VideoDemo/master/screenshot/Screenshot_2018-01-14-01-07-33.png
