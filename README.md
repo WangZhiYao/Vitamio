@@ -1,4 +1,4 @@
-# VideoDemo
+# Vitamio
 Based on Vitamio, support full screen, playback, gesture adjustment progress, volume, brightness
 
 ## 预览
