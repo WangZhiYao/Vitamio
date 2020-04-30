@@ -1,10 +1,13 @@
+# NOTICE
+Vitamio library is no longer maintained by official.
+
 # Vitamio
-Based on Vitamio, support full screen, playback, gesture adjustment progress, volume, brightness
+Based on <a href="https://vitamio.org" target="_blank">Vitamio</a>, support full screen, playback, change progress, volume, brightness by gesture
 
 ## 预览
 <div align="center">
-    <img src="/screenshot/Screenshot_2018-01-14-00-38-35.png" height="768px">
-    <img src="/screenshot/Screenshot_2018-01-14-00-39-03.png" height="768px">
+    <img src="/screenshot/Screenshot_2018-01-14-00-38-35.png" height="770px">
+    <img src="/screenshot/Screenshot_2018-01-14-00-39-03.png" height="770px">
 </div>
 
 <div align="center">
