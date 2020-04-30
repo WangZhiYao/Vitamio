@@ -1,5 +1,5 @@
 # NOTICE
-Vitamio library is no longer maintained by official.
+Vitamio library is no longer maintained by official. You can use [Google ExoPlayer](https://github.com/google/ExoPlayer) instead of vitamio library,
 
 # Vitamio
 Based on <a href="https://vitamio.org" target="_blank">Vitamio</a>, support full screen, playback, change progress, volume, brightness by gesture
